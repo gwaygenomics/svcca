@@ -1,11 +1,11 @@
 # Copyright 2016 Google Inc.
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #     http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -161,9 +161,11 @@ def compute_ccas(sigma_xx, sigma_xy, sigma_yx, sigma_yy, verbose=True):
     print("trying to take final svd")
   arr_x_stable = arr_x + epsilon * np.eye(arr_x.shape[0])
   arr_y_stable = arr_y + epsilon * np.eye(arr_y.shape[0])
-  ux, sx, vx = np.linalg.svd(arr_x_stable)
-  uy, sy, vy = np.linalg.svd(arr_y_stable)
-
+  try:
+      ux, sx, vx = np.linalg.svd(arr_x_stable)
+      uy, sy, vy = np.linalg.svd(arr_y_stable)
+  except:
+      return [0, 0, 0], [0, 0, 0], 0, 0, 0, 0
   sx = np.sqrt(np.abs(sx))
   sy = np.sqrt(np.abs(sy))
   if verbose:
@@ -188,7 +190,7 @@ def sum_threshold(array, threshold):
   """
   assert (threshold >= 0) and (threshold <= 1), "print incorrect threshold"
 
-  for i in xrange(len(array)):
+  for i in range(len(array)):
     if np.sum(array[:i]) / np.sum(array) >= threshold:
       return i
 
@@ -354,7 +356,7 @@ def robust_cca_similarity(acts1, acts2, threshold=0.98, compute_dirns=True):
                          computed.
   """
 
-  for trial in xrange(num_cca_trials):
+  for trial in range(num_cca_trials):
     try:
       return_dict = get_cca_similarity(acts1, acts2, threshold, compute_dirns)
     except np.LinAlgError:
